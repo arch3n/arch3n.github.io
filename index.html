@@ -1,49 +1,75 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Meu Site</title>
+  <meta charset="UTF-8">
+  <title>Meu Site</title>
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* evita rolagem durante o GIF */
-        }
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Esconde barra de rolagem enquanto o splash estiver ativo */
+    }
 
-        /* Tela de abertura com o GIF */
-        #splash {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black; /* fundo do splash */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 1s ease;
-        }
+    #splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: black; /* cor de fundo ou poderia ser opcional */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 1s ease;
+    }
 
-        /* Conteúdo do site */
-        .main-content {
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
+    .main-content {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
 
-        .main-content.visible {
-            opacity: 1;
-        }
-    </style>
+    .main-content.visible {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Splash screen com GIF -->
-    <div id="splash">
-        <img src="gif.gif" id="gif" alt="Abertura">
-    </div>
+  <div id="splash">
+    <img src="gif.gif" alt="Abertura">
+  </div>
 
-    <!-- Conteúdo real do site -->
-    <div class="main-content" id="content">
-        <h1>M
+  <div class="main-content" id="content">
+    <!-- TODO: coloque aqui seu conteúdo real -->
+    <h1>Bem-vindo ao meu site!</h1>
+    <p>Este é o conteúdo principal.</p>
+    <!-- Exemplo de imagens -->
+    <img src="img1.png" alt="">
+    <img src="img2.jpg" alt="">
+  </div>
+
+  <script>
+    // Defina AQUI o tempo total que seu GIF deve durar (em milissegundos)
+    const GIF_DURATION = 5000;  // exemplo: 5000 ms = 5 segundos
+
+    window.onload = function() {
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        const content = document.getElementById('content');
+
+        splash.style.opacity = 0;
+        setTimeout(() => {
+          splash.style.display = 'none';
+          content.classList.add('visible');
+          document.body.style.overflow = 'auto'; // permite rolagem e mostra conteúdo completo
+        }, 1000); // 1 segundo para o fade-out
+      }, GIF_DURATION);
+    };
+  </script>
+
+</body>
+</html>
