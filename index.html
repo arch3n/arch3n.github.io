@@ -9,15 +9,19 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-image: url("background.jpg"); 
+
+      /* Começa com um fundo provisório (preto) */
+      background-color: black;
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+
       font-family: Arial, sans-serif;
       height: 100vh;
+
       display: flex;
       justify-content: center;
-      align-items: center; /* centraliza vertical */
+      align-items: center;
     }
 
     /* Splash */
@@ -32,60 +36,57 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      opacity: 1;
-      transition: opacity 0.4s ease; /* fade-out mais rápido */
     }
 
-    /* Conteúdo do site (texto centralizado) */
+    /* Conteúdo centralizado */
     .main-content {
       opacity: 0;
-      transition: opacity 0.6s ease;
+      transition: opacity 1s ease;
       color: white;
       text-align: center;
       padding: 20px;
       max-width: 900px;
+      z-index: 1;
     }
 
     .main-content.visible {
       opacity: 1;
     }
 
-    img {
-      max-width: 100%;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
   </style>
 </head>
 <body>
 
   <!-- Splash -->
   <div id="splash">
-    <img src="gif.gif" alt="Abertura">
+    <img id="gifElement" src="gif.gif" alt="Abertura">
   </div>
 
   <!-- Conteúdo -->
   <div class="main-content" id="content">
     <h1>Bem-vindo!</h1>
-    <p>O texto agora está centralizado no meio da tela, sem caixa visível!</p>
+    <p>Agora o GIF continua como fundo animado do site.</p>
   </div>
 
   <script>
-    const GIF_DURATION = 1000; // 5 segundos independente do GIF
+    const GIF_DURATION = 5000; // 5 segundos
 
     window.onload = () => {
       setTimeout(() => {
         const splash = document.getElementById('splash');
         const content = document.getElementById('content');
+        const gif = document.getElementById('gifElement').src;
 
-        // fade-out rápido (0.4s)
-        splash.style.opacity = 0;
+        /* TROCA O FUNDO DO SITE PARA O GIF */
+        document.body.style.backgroundImage = `url('${gif}')`;
 
-        setTimeout(() => {
-          splash.style.display = "none";
-          content.classList.add("visible");
-          document.body.style.overflow = "auto";
-        }, 400); // igual ao tempo do fade
+        /* remove o splash instantaneamente (sem fade) */
+        splash.style.display = "none";
+
+        /* mostra o conteúdo */
+        content.classList.add("visible");
+        document.body.style.overflow = "auto";
+
       }, GIF_DURATION);
     };
   </script>
