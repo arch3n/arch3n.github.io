@@ -7,7 +7,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- <link href="https://fonts.googleapis.com/css2?family=Geo:ital@0;1&family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geo:ital@0;1&family=VT323&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --blur-amount: 8px;
@@ -19,9 +20,11 @@
       background-color: #000;
       font-family: "Geo", monospace; 
       color: #fff;
+      overflow: hidden; 
+      text-transform: uppercase;
     }
 
-    /* FUNDO */
+    /* --- CAMADA DE FUNDO --- */
     #background-layer {
       position: fixed;
       inset: 0;
@@ -37,7 +40,12 @@
       filter: blur(var(--blur-amount));
     }
 
-    /* INTRO */
+    .fade-to-black {
+      opacity: 0 !important; 
+      transition: opacity 2.5s ease-in-out !important; 
+    }
+
+    /* --- TELA DE INTRO --- */
     #intro {
       position: fixed;
       inset: 0;
@@ -55,7 +63,7 @@
       object-fit: cover;
     }
 
-    /* CONTEÚDO */
+    /* --- CONTEÚDO PRINCIPAL --- */
     #content {
       position: relative;
       z-index: 30;
@@ -74,7 +82,7 @@
       opacity: 1;
     }
 
-    /* --- ANIMAÇÃO DE ESTÁTICA (RGB SPLIT) --- */
+    /* --- EFEITOS DE TEXTO --- */
     @keyframes static-vibrate {
       0% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
       25% { text-shadow: -2px 0 #ff0000, 2px 0 #00ffff; }
@@ -83,22 +91,17 @@
       100% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
     }
 
-    .glitch-text {
-        animation: static-vibrate 0.1s infinite; 
-    }
+    .glitch-text { animation: static-vibrate 0.1s infinite; }
 
-    /* TEXTOS */
     .typewriter {
         font-size: 2.5rem; 
         margin-bottom: 1rem;
         letter-spacing: 2px; 
     }
     
-    p.typewriter {
-        font-size: 1.5rem; 
-    }
+    p.typewriter { font-size: 1.5rem; }
 
-    /* BOTÕES */
+    /* --- BOTÕES INICIAIS --- */
     #choice-buttons {
       margin-top: 3rem;
       display: flex;
@@ -120,11 +123,9 @@
       text-transform: uppercase; 
     }
 
-    button:hover {
-      transform: scale(1.1);
-    }
+    button:hover { transform: scale(1.1); }
 
-    /* BUG DO BOTÃO */
+    /* --- BUG DO BOTÃO "NÃO" --- */
     @keyframes glitch-anim {
       0% { transform: translate(0) skew(0deg); }
       20% { transform: translate(-2px, 2px) skew(-10deg); }
@@ -134,11 +135,20 @@
       100% { transform: translate(0) skew(0deg); }
     }
 
-    .bug-effect {
-        animation: glitch-anim 0.2s infinite; 
+    .bug-effect { animation: glitch-anim 0.2s infinite; }
+
+    /* --- QUEDA --- */
+    @keyframes free-fall {
+      0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0px); }
+      100% { transform: translateY(-200vh) scale(0.8); opacity: 0; filter: blur(10px); }
     }
 
-    /* EXTRA CONTENT */
+    .falling {
+      animation: free-fall 2.5s forwards cubic-bezier(0.6, 0.04, 0.98, 0.335);
+      pointer-events: none; 
+    }
+
+    /* --- EXTRA CONTENT --- */
     #extra-content {
       opacity: 0;
       visibility: hidden;
@@ -151,12 +161,149 @@
       visibility: visible;
     }
     
-    #extra-content h2 {
-        font-size: 2.5rem;
+    #extra-content h2 { font-size: 2.5rem; }
+    #extra-content p { font-size: 1.5rem; }
+
+    /* --- SISTEMA DE QUIZ --- */
+    #quiz-container {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem;
     }
-    #extra-content p {
-        font-size: 1.5rem;
+
+    #quiz-container.active {
+      display: flex;
+      animation: fade-in 2s ease forwards;
     }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Imagem da Pergunta */
+    #quiz-image {
+        max-width: 100%;
+        max-height: 600px;
+        margin-bottom: 1.5rem;
+        border: 2px solid #ffffff;
+        display: none; /* Escondido por padrão */
+        object-fit: contain;
+        box-shadow: 0 0 15px #ffffff;
+    }
+
+    #quiz-question {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: #ffffff;
+      text-shadow: 0 0 5px #ffffff;
+    }
+#quiz-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centraliza imagem, pergunta e opções */
+        width: 100%;
+    }
+#quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto; /* <--- ISSO É O MAIS IMPORTANTE: Força o centro horizontal */
+    }
+
+    .quiz-btn {
+      padding: 1rem;
+      background: transparent;
+      border: 1px solid #ffffff;
+      color: #ffffff;
+      font-family: "Geo", monospace;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+    }
+
+    .quiz-btn:hover {
+      background: #ffffff;
+      color: #000;
+      box-shadow: 0 0 15px #ffffff;
+    }
+
+    /* --- GRID DE RESULTADOS DUPLOS --- */
+    #results-wrapper {
+        display: flex;
+        gap: 2rem;
+        width: 100%;
+        max-width: 800px;
+        margin-bottom: 2rem;
+        justify-content: center;
+        flex-wrap: wrap; 
+    }
+    #quiz-final-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* ISSO CENTRALIZA TUDO */
+        justify-content: center;
+        width: 100%;
+    }
+    .result-card {
+        flex: 1;
+        min-width: 250px;
+        border: 1px solid #ffffff;
+        padding: 1rem;
+        background: rgba(0, 255, 0, 0.05);
+        text-align: center;
+    }
+
+    .result-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #ffffff;
+    }
+
+    .result-card h3 {
+        color: #ffffff;
+        font-size: 1.8rem;
+        margin: 0.5rem 0;
+    }
+
+    .result-card p {
+        font-size: 1.1rem;
+        color: #ddd;
+    }
+
+    /* Formulário Final */
+    #player-name {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #ffffff;
+      color: #fff;
+      font-family: "Geo", monospace;
+      font-size: 2rem;
+      text-align: center;
+      outline: none;
+      padding: 0.5rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 400px;
+      text-transform: uppercase;
+    }
+    #player-name::placeholder { color: #ffffff55; }
+    
+    #btn-submit { background: #ffffff; color: #000; border: none; }
+    #btn-submit:hover { box-shadow: 0 0 20px #ffffff; }
+    #btn-submit:disabled { background: #555; cursor: not-allowed; }
+
   </style>
 </head>
 
@@ -169,8 +316,8 @@
 </div>
 
 <main id="content">
-    <h1 class="typewriter glitch-text" data-text="Bem vindo."></h1>
-    <p class="typewriter glitch-text" data-text="Me diga, você está preparado para a queda?"></p>
+    <h1 class="typewriter glitch-text" data-text="BEM VINDO."></h1>
+    <p class="typewriter glitch-text" data-text="VOCÊ ESTÁ PREPARADO?"></p>
 
     <div id="choice-buttons">
         <button id="btn-yes">Sim</button>
@@ -178,26 +325,134 @@
     </div>
 
     <div id="extra-content">
-        <h2 class="glitch-text">Ótimo. Vamos começar.</h2>
+        <h2 class="glitch-text">ÓTIMO. VAMOS COMEÇAR.</h2>
         <p></p>
     </div>
 </main>
 
+<div id="quiz-container">
+    <div id="quiz-content">
+        <img id="quiz-image" src="" alt="Imagem da Pergunta">
+        
+        <h2 id="quiz-question" class="glitch-text">...</h2>
+        <div id="quiz-options"></div>
+    </div>
+
+    <div id="quiz-final-form" style="display: none;">
+        <input type="text" id="player-name" placeholder="DIGITE SEU NOME..." autocomplete="off">
+        <button id="btn-submit">ENVIAR DADOS</button>
+    </div>
+</div>
+
 <script>
 (function () {
+  /* =========================================
+     1. CONFIGURAÇÕES & DADOS DO QUIZ
+     ========================================= */
   const INTRO_TIME = 1000; 
   const FADE_OUT_MS = 600;
+  
+  // LISTA 1: DIMENSÃO 1 (Ex: Personalidade)
+  const LIST_1 = {
+      "G1_TIPO_A": { 
+          title: "TIPO A (PLACEHOLDER)", 
+          desc: "Descrição do Resultado da Lista 1 - Tipo A.", 
+          image: "https://via.placeholder.com/300x200/003300/00ff00?text=IMG+TIPO+A" 
+      },
+      "G1_TIPO_B": { 
+          title: "TIPO B (PLACEHOLDER)", 
+          desc: "Descrição do Resultado da Lista 1 - Tipo B.", 
+          image: "https://via.placeholder.com/300x200/003300/00ff00?text=IMG+TIPO+B" 
+      }
+  };
 
+  // LISTA 2: DIMENSÃO 2 (Ex: Destino/Alinhamento)
+  const LIST_2 = {
+      "G2_TIPO_X": { 
+          title: "TIPO X (PLACEHOLDER)", 
+          desc: "Descrição do Resultado da Lista 2 - Tipo X.", 
+          image: "https://via.placeholder.com/300x200/003300/00ff00?text=IMG+TIPO+X" 
+      },
+      "G2_TIPO_Y": { 
+          title: "TIPO Y (PLACEHOLDER)", 
+          desc: "Descrição do Resultado da Lista 2 - Tipo Y.", 
+          image: "https://via.placeholder.com/300x200/003300/00ff00?text=IMG+TIPO+Y" 
+      }
+  };
+
+  // BANCO DE PERGUNTAS (PLACEHOLDERS)
+  const allQuestions = [
+      { 
+          text: "PERGUNTA 1 (PLACEHOLDER)", 
+          // Exemplo COM IMAGEM (se não quiser, deixe a string vazia "")
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/background.jpg?raw=true", 
+          
+          options: [
+              { 
+                  text: "Opção que dá pontos para A e X", 
+                  weights: { "G1_TIPO_A": 3, "G2_TIPO_X": 2 } 
+              },
+              { 
+                  text: "Opção que dá pontos para B e Y", 
+                  weights: { "G1_TIPO_B": 3, "G2_TIPO_Y": 2 } 
+              },
+              { 
+                  text: "Opção mista", 
+                  weights: { "G1_TIPO_A": 1, "G1_TIPO_B": 1, "G2_TIPO_X": 1 } 
+              }
+          ]
+      },
+      { 
+          text: "PERGUNTA 2 (PLACEHOLDER - SEM IMAGEM)", 
+          image: "", // Sem imagem
+          options: [
+              { text: "Foco total em X", weights: { "G2_TIPO_X": 5 } },
+              { text: "Foco total em Y", weights: { "G2_TIPO_Y": 5 } },
+              { text: "Foco total em A", weights: { "G1_TIPO_A": 5 } },
+              { text: "Foco total em B", weights: { "G1_TIPO_B": 5 } }
+          ]
+      },
+      { 
+          text: "PERGUNTA 3 (PLACEHOLDER)", 
+          image: "",
+          options: [
+              { text: "Opção Genérica 1", weights: { "G1_TIPO_A": 2, "G2_TIPO_Y": 2 } },
+              { text: "Opção Genérica 2", weights: { "G1_TIPO_B": 2, "G2_TIPO_X": 2 } }
+          ]
+      }
+      // COPIE E COLE OS BLOCOS ACIMA PARA CRIAR MAIS PERGUNTAS
+  ];
+
+  /* =========================================
+     2. ELEMENTOS E VARIÁVEIS
+     ========================================= */
   const intro = document.getElementById('intro');
   const introGif = document.getElementById('intro-gif');
   const bg = document.getElementById('background-layer');
   const content = document.getElementById('content');
   const extra = document.getElementById("extra-content");
+  
+  const quizContainer = document.getElementById("quiz-container");
+  const quizContent = document.getElementById("quiz-content");
+  const quizImageEl = document.getElementById("quiz-image"); 
+  const questionEl = document.getElementById("quiz-question");
+  const optionsEl = document.getElementById("quiz-options");
+  const finalForm = document.getElementById("quiz-final-form");
+  const nameInput = document.getElementById("player-name");
+  const submitBtn = document.getElementById("btn-submit");
+
+  const btnYes = document.getElementById("btn-yes");
+  const btnNo = document.getElementById("btn-no");
 
   let gifLoaded = false;
+  let userScores = {}; 
+  let finalResult1 = null; 
+  let finalResult2 = null;
 
+  /* =========================================
+     3. INIT
+     ========================================= */
   introGif.addEventListener('load', () => gifLoaded = true);
-  introGif.addEventListener('error', () => gifLoaded = false);
   if (introGif.complete && introGif.naturalWidth !== 0) gifLoaded = true;
 
   function setBackground(src) {
@@ -220,7 +475,9 @@
     }, INTRO_TIME);
   });
 
-  /* TYPEWRITER */
+  /* =========================================
+     4. EFEITOS DE TEXTO
+     ========================================= */
   function startTypewriter() {
     const els = document.querySelectorAll('.typewriter');
     let finishedCount = 0; 
@@ -234,62 +491,214 @@
           setTimeout(step, 50);
         } else {
             finishedCount++;
-            if(finishedCount === els.length) {
-                startPassiveGlitchSystem(); 
-            }
+            if(finishedCount === els.length) startPassiveGlitchSystem(); 
         }
       }
       step();
     });
   }
 
-  /* PASSIVE GLITCH */
   function startPassiveGlitchSystem() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*<>?[]{}";
     function triggerGlitch() {
         const visibleElements = Array.from(document.querySelectorAll('.glitch-text'))
             .filter(el => el.offsetParent !== null && el.textContent.length > 0);
-        if (visibleElements.length === 0) {
-            scheduleNextGlitch(); return;
-        }
+        
+        if (visibleElements.length === 0) { scheduleNextGlitch(); return; }
+
         const randomEl = visibleElements[Math.floor(Math.random() * visibleElements.length)];
         const originalText = randomEl.textContent;
         const textArray = originalText.split('');
-        const glitchCount = Math.floor(Math.random()) + 1; 
+        const glitchCount = Math.floor(Math.random() * 2) + 1; 
+
         for(let k=0; k<glitchCount; k++){
             const index = Math.floor(Math.random() * textArray.length);
             if(textArray[index] !== ' ') {
-                textArray[index] = chars[Math.floor(Math.random()*5 * chars.length)];
+                textArray[index] = chars[Math.floor(Math.random() * chars.length)];
             }
         }
         randomEl.textContent = textArray.join('');
+        
         setTimeout(() => {
             randomEl.textContent = originalText;
             scheduleNextGlitch(); 
         }, Math.random() * 100 + 50);
     }
     function scheduleNextGlitch() {
-        const delay = Math.random() * 1000 + 1000;
-        setTimeout(triggerGlitch, delay);
+        setTimeout(triggerGlitch, Math.random() * 2000 + 1000);
     }
     scheduleNextGlitch();
   }
 
-  /* BOTÕES */
-  const btnYes = document.getElementById("btn-yes");
-  const btnNo = document.getElementById("btn-no");
-
-function activateContent() {
-      // 1. Mostra o texto "Ótimo. Vamos começar."
+  /* =========================================
+     5. TRANSIÇÃO (QUEDA)
+     ========================================= */
+  function activateContent() {
       extra.classList.add("visible");
-      
-      // 2. Espera 3 segundos para a pessoa ler
       setTimeout(() => {
-          // 3. Ativa a classe que faz tudo cair
           content.classList.add("falling");
-      }, 1000); 
+          bg.classList.add("fade-to-black");
+          setTimeout(initQuiz, 2500);
+      }, 2000); 
   }
 
+  /* =========================================
+     6. LÓGICA DO QUIZ (DUPLO RESULTADO)
+     ========================================= */
+  function initQuiz() {
+      content.style.display = "none"; 
+      quizContainer.classList.add("active"); 
+
+      // Zera pontuação
+      userScores = {};
+
+      // Sorteia perguntas (aqui estamos usando TODAS as perguntas aleatórias)
+      // Se quiser limitar, use .slice(0, NUMERO)
+      const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+      
+      runQuizLoop(shuffled, 0);
+  }
+
+  function runQuizLoop(questions, index) {
+      if (index >= questions.length) {
+          calculateAndShowResult();
+          return;
+      }
+
+      const q = questions[index];
+      questionEl.innerText = q.text;
+      optionsEl.innerHTML = ""; 
+
+      // Controle da Imagem
+      if (q.image && q.image.trim() !== "") {
+          quizImageEl.src = q.image;
+          quizImageEl.style.display = "block"; 
+      } else {
+          quizImageEl.style.display = "none";
+          quizImageEl.src = "";
+      }
+
+      const shuffledOptions = q.options.sort(() => 0.5 - Math.random());
+
+      shuffledOptions.forEach(opt => {
+          const btn = document.createElement("button");
+          btn.innerText = opt.text;
+          btn.className = "quiz-btn";
+          
+          btn.onclick = () => {
+              if (opt.weights) {
+                  for (const [type, points] of Object.entries(opt.weights)) {
+                      // Inicializa se não existir
+                      if (!userScores[type]) userScores[type] = 0;
+                      userScores[type] += points;
+                  }
+              }
+              runQuizLoop(questions, index + 1);
+          };
+          
+          optionsEl.appendChild(btn);
+      });
+  }
+
+  function calculateAndShowResult() {
+      // 1. Calcula Vencedor da Lista 1
+      let max1 = -1;
+      let winnerKey1 = Object.keys(LIST_1)[0]; 
+      
+      for (const key of Object.keys(LIST_1)) {
+          const score = userScores[key] || 0;
+          if (score > max1) { max1 = score; winnerKey1 = key; }
+      }
+      finalResult1 = LIST_1[winnerKey1];
+
+      // 2. Calcula Vencedor da Lista 2
+      let max2 = -1;
+      let winnerKey2 = Object.keys(LIST_2)[0]; 
+
+      for (const key of Object.keys(LIST_2)) {
+          const score = userScores[key] || 0;
+          if (score > max2) { max2 = score; winnerKey2 = key; }
+      }
+      finalResult2 = LIST_2[winnerKey2];
+
+      // 3. Monta o HTML
+      quizContent.style.display = "none";
+      finalForm.style.display = "flex";
+      finalForm.style.flexDirection = "column";
+
+      const resultsWrapper = document.createElement("div");
+      resultsWrapper.id = "results-wrapper";
+
+      const card1 = `
+        <div class="result-card">
+            <h3 class="glitch-text">${finalResult1.title}</h3>
+            <img src="${finalResult1.image}" alt="${finalResult1.title}">
+            <p>${finalResult1.desc}</p>
+        </div>
+      `;
+
+      const card2 = `
+        <div class="result-card">
+            <h3 class="glitch-text">${finalResult2.title}</h3>
+            <img src="${finalResult2.image}" alt="${finalResult2.title}">
+            <p>${finalResult2.desc}</p>
+        </div>
+      `;
+
+      resultsWrapper.innerHTML = card1 + card2;
+      finalForm.insertBefore(resultsWrapper, nameInput);
+  }
+
+  /* =========================================
+     7. ENVIO FORMSPREE
+     ========================================= */
+  submitBtn.addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      if(!name) {
+          alert("IDENTIFICAÇÃO NECESSÁRIA.");
+          return;
+      }
+
+      submitBtn.innerText = "ENVIANDO...";
+      submitBtn.disabled = true;
+
+      // [ATENÇÃO] COLE SUA URL DO FORMSPREE AQUI
+      const ENDPOINT = "https://formspree.io/f/mqardbgk"; 
+
+      const dataToSend = {
+          name: name,
+          result_1: finalResult1.title,
+          result_2: finalResult2.title,
+          full_scores: JSON.stringify(userScores),
+          _subject: `Novo: ${name} (${finalResult1.title} + ${finalResult2.title})`
+      };
+
+      fetch(ENDPOINT, {
+          method: "POST",
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(dataToSend)
+      })
+      .then(response => {
+          if (response.ok) {
+              finalForm.innerHTML = `
+                  <h2 class='glitch-text' style='color:#ffffff'>REGISTRO CONFIRMADO.</h2>
+                  <p>VOCÊ FAZ PARTE DO SISTEMA AGORA.</p>
+              `;
+          } else {
+              throw new Error("Erro no servidor");
+          }
+      })
+      .catch(error => {
+          console.error("Erro:", error);
+          alert("ERRO NA TRANSMISSÃO.");
+          submitBtn.innerText = "ENVIAR DADOS";
+          submitBtn.disabled = false;
+      });
+  });
+
+  /* =========================================
+     8. BOTÕES INICIAIS
+     ========================================= */
   btnYes.addEventListener("click", activateContent);
   
   btnNo.addEventListener("mouseover", () => {
@@ -300,13 +709,7 @@ function activateContent() {
       const possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*"; 
       let iteration = 0;
       const interval = setInterval(() => {
-          btnNo.innerText = targetText
-            .split("")
-            .map((letter, index) => {
-                if(index < iteration) return targetText[index];
-                return possibleChars[Math.floor(Math.random() * possibleChars.length)];
-            })
-            .join("");
+          btnNo.innerText = targetText.split("").map((l, i) => i < iteration ? targetText[i] : possibleChars[Math.floor(Math.random() * possibleChars.length)]).join("");
           if(iteration >= targetText.length) { 
               clearInterval(interval);
               btnNo.innerText = targetText; 
