@@ -1,51 +1,43 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Site</title>
-    <link rel="stylesheet" href="style.css">
-</head>
 <body>
 
-    <!-- Tela inicial com GIF -->
+    <!-- Camada do fundo que receberá blur -->
+    <div id="background-blur"></div>
+
+    <!-- Tela inicial -->
     <div id="intro">
         <img id="intro-gif" src="gif.gif" alt="Intro GIF">
     </div>
 
-    <!-- Conteúdo do site -->
+    <!-- Conteúdo -->
     <div id="content">
         <h1 class="typewriter" data-text="Bem-vinda!"></h1>
         <p class="typewriter" data-text="Seu texto aqui..."></p>
     </div>
 
 <script>
-    // Aguarda 5 segundos
     setTimeout(() => {
         const gif = document.getElementById("intro-gif");
 
-        // GIF vira o fundo
-        document.body.style.backgroundImage = `url(${gif.src})`;
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
+        // Torna o GIF o fundo
+        const bg = document.getElementById("background-blur");
+        bg.style.backgroundImage = `url(${gif.src})`;
 
-        // Aplica blur no fundo
-        document.body.classList.add("blur-bg");
+        // Aplica o blur no fundo
+        bg.classList.add("blur");
 
-        // Some a tela de intro
+        // Some com a intro
         document.getElementById("intro").style.opacity = 0;
 
         setTimeout(() => {
             document.getElementById("intro").style.display = "none";
             document.getElementById("content").style.opacity = 1;
 
-            // Inicia o efeito typewriter
+            // Inicia o typewriter
             startTypewriter();
         }, 600);
 
     }, 5000);
 
-    // Efeito typewriter
     function startTypewriter() {
         document.querySelectorAll(".typewriter").forEach(el => {
             const text = el.getAttribute("data-text");
@@ -56,7 +48,7 @@
                 if (i < text.length) {
                     el.textContent += text.charAt(i);
                     i++;
-                    setTimeout(type, 50); // velocidade da digitação
+                    setTimeout(type, 50);
                 }
             }
 
@@ -64,6 +56,4 @@
         });
     }
 </script>
-
 </body>
-</html>
