@@ -1,59 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Meu Site — Intro GIF como fundo com blur</title>
+
+  <style>
+    :root {
+      --blur-amount: 8px;
+      --type-speed: 50; /* ms por caractere */
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: #000; /* evita tela branca enquanto carrega */
+      font-family: Arial, Helvetica, sans-serif;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* CAMADA que mostrará o fundo (GIF convertido em background) */
+    #background-layer {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+      transition: filter 0.8s ease, opacity 0.6s ease;
+      opacity: 1;
+    }
+
+    /* quando o blur deve aparecer */
+    #background-layer.blurred {
+      filter: blur(var(--blur-amount));
+    }
+
+    /* TELA DE INTRO (gif em fullscreen) */
+    #intro {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      z-index: 20; /* acima de tudo enquanto intro estiver visível */
+      transition: opacity 0.6s ease;
+    }
+
+    #intro img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* garante fullscreen sem deixar "caixas" */
+      display: block;
+    }
+
+    /* CONTEÚDO (texto) por cima do fundo blur */
+    #content {
+      position: relative;
+      z-index: 30; /* acima do background e abaixo do intro enquanto intro estiver */
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      box-sizing: border-box;
+      pointer-events: auto;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+    }
+
+    #content.visible { opacity: 1; }
+
+    h1 { font-size: clamp(1.6rem, 3.5vw, 3rem); margin: 0; letter-spacing: .5px; }
+    p  { font-size: clamp(1rem, 2.2vw, 1.25rem); margin-top: 0.8rem; color: #e9e9e9; }
+
+    /* pequeno "glow" opcional no texto para destacar sobre o fundo */
+    .text-glow {
+      text-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    /* garante responsividade */
+    @media (max-width: 600px) {
+      p { font-size: 1rem; }
+    }
+  </style>
+</head>
 <body>
 
-    <!-- Camada do fundo que receberá blur -->
-    <div id="background-blur"></div>
+  <!-- camada do fundo que receberá o GIF (após intro) -->
+  <div id="background-layer"></div>
 
-    <!-- Tela inicial -->
-    <div id="intro">
-        <img id="intro-gif" src="gif.gif" alt="Intro GIF">
-    </div>
+  <!-- intro (mostra o GIF em fullscreen) -->
+  <div id="intro" aria-hidden="true">
+    <img id="intro-gif" src="gif.gif" alt="Intro">
+  </div>
 
-    <!-- Conteúdo -->
-    <div id="content">
-        <h1 class="typewriter" data-text="Bem-vinda!"></h1>
-        <p class="typewriter" data-text="Seu texto aqui..."></p>
+  <!-- conteúdo com typewriter -->
+  <main id="content" role="main" aria-live="polite">
+    <div>
+      <h1 class="text-glow typewriter" data-text="Bem-vinda!"></h1>
+      <p class="typewriter" data-text="Aqui é o seu site — o GIF virou o fundo com blur."></p>
     </div>
+  </main>
 
 <script>
-    setTimeout(() => {
-        const gif = document.getElementById("intro-gif");
+/*
+  Fluxo:
+  1) Toca o GIF como intro fullscreen (elemento <img> em #intro)
+  2) Após X ms (5s), copia o src do GIF para o background-layer
+     e aplica o blur à camada de fundo (sem tocar no conteúdo)
+  3) Remove/hide a camada intro (display:none) após transição
+  4) Inicia efeito typewriter
+  5) Fallback: se GIF não carregar, usa background.jpg
+*/
 
-        // Torna o GIF o fundo
-        const bg = document.getElementById("background-blur");
-        bg.style.backgroundImage = `url(${gif.src})`;
+(function () {
+  const INTRO_TIME = 5000; // 5 segundos fixos
+  const FADE_OUT_MS = 600; // tempo da transição de opacidade para esconder intro
 
-        // Aplica o blur no fundo
-        bg.classList.add("blur");
+  const intro = document.getElementById('intro');
+  const introGif = document.getElementById('intro-gif');
+  const bg = document.getElementById('background-layer');
+  const content = document.getElementById('content');
 
-        // Some com a intro
-        document.getElementById("intro").style.opacity = 0;
+  // Prevenção: começa com conteúdo bloqueado (visível só após swap)
+  document.body.style.backgroundColor = '#000';
 
-        setTimeout(() => {
-            document.getElementById("intro").style.display = "none";
-            document.getElementById("content").style.opacity = 1;
-
-            // Inicia o typewriter
-            startTypewriter();
-        }, 600);
-
-    }, 5000);
-
-    function startTypewriter() {
-        document.querySelectorAll(".typewriter").forEach(el => {
-            const text = el.getAttribute("data-text");
-            el.textContent = "";
-            let i = 0;
-
-            function type() {
-                if (i < text.length) {
-                    el.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(type, 50);
-                }
-            }
-
-            type();
-        });
+  // Função segura para setar background (com fallback se src inválido)
+  function setBackground(src) {
+    if (!src) {
+      src = 'background.jpg'; // fallback local - coloque esse arquivo no repo
     }
+    // Força uso do URL exato (escape)
+    bg.style.backgroundImage = `url('${src}')`;
+    bg.style.backgroundSize = 'cover';
+    bg.style.backgroundPosition = 'center';
+  }
+
+  // Se o GIF falhar em carregar, troca para o background.jpg imediatamente
+  let gifLoaded = false;
+  introGif.addEventListener('load', () => { gifLoaded = true; });
+  introGif.addEventListener('error', () => { gifLoaded = false; });
+
+  // Safety: se a imagem já estiver no cache, load event pode ter ocorrido antes
+  if (introGif.complete && introGif.naturalWidth !== 0) {
+    gifLoaded = true;
+  }
+
+  // Timer para a troca (sempre 5s independente da duração real do gif)
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      // decide o src a usar (gif ou fallback)
+      const src = gifLoaded ? introGif.src : 'background.jpg';
+      setBackground(src);
+
+      // Aplica blur somente na camada de fundo (classe "blurred")
+      bg.classList.add('blurred');
+
+      // Esconde a intro com fade (mas sem deixar "branco")
+      intro.style.opacity = '0';
+
+      // Depois da transição, remove o elemento intro do fluxo e permite scroll
+      setTimeout(() => {
+        intro.style.display = 'none';
+        // Permite rolagem caso o conteúdo precise
+        document.body.style.overflow = 'auto';
+        // Mostra conteúdo
+        content.classList.add('visible');
+        // Inicia typewriter
+        startTypewriter();
+      }, FADE_OUT_MS);
+
+    }, INTRO_TIME);
+  });
+
+  // TYPEWRITER
+  function startTypewriter() {
+    const els = document.querySelectorAll('.typewriter');
+    els.forEach(el => {
+      const text = el.getAttribute('data-text') || '';
+      el.textContent = '';
+      let i = 0;
+      function step() {
+        if (i <= text.length - 1) {
+          el.textContent += text.charAt(i);
+          i++;
+          setTimeout(step, parseInt(getComputedStyle(document.documentElement).getPropertyValue('--type-speed')) || 50);
+        }
+      }
+      step();
+    });
+  }
+
+  // Segurança extra: se JS estiver bloqueado, mostramos o background.jpg estático
+  // (isso garante que a página não fique branca se JS falhar)
+  // Nota: isto é apenas uma garantia adicional via <noscript> abaixo.
+})();
 </script>
+
+<noscript>
+  <style>
+    /* se JS estiver desabilitado, mostrar um fundo estático e o conteúdo sem animação */
+    #intro { display: none !important; }
+    #background-layer { background-image: url('background.jpg') !important; filter: blur(8px); }
+    #content { opacity: 1 !important; }
+  </style>
+  <div style="position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:999">
+    <div style="text-align:center; color:#fff; padding:1rem">
+      <h1>Bem-vinda!</h1>
+      <p>Seu navegador não possui JavaScript habilitado — atualize a página para ver a animação.</p>
+    </div>
+  </div>
+</noscript>
+
 </body>
+</html>
