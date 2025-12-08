@@ -190,7 +190,7 @@
     /* Imagem da Pergunta */
     #quiz-image {
         max-width: 100%;
-        max-height: 600px;
+        max-height: 400px;
         margin-bottom: 1.5rem;
         border: 2px solid #ffffff;
         display: none; /* Escondido por padrão */
@@ -220,13 +220,13 @@
       color: #ffffff;
       text-shadow: 0 0 5px #ffffff;
     }
-#quiz-content {
+    #quiz-content {
         display: flex;
         flex-direction: column;
         align-items: center; /* Centraliza imagem, pergunta e opções */
         width: 100%;
     }
-/* CONFIGURAÇÃO DOS BOTÕES LADO A LADO */
+    /* CONFIGURAÇÃO DOS BOTÕES LADO A LADO */
     #quiz-options {
       display: grid;              /* Ativa o modo Grade */
       grid-template-columns: 1fr 1fr; /* Cria 2 colunas de tamanho igual */
@@ -261,38 +261,51 @@
       box-shadow: 0 0 15px #ffffff;
     }
 
-    /* --- GRID DE RESULTADOS DUPLOS --- */
-    #results-wrapper {
+    /* --- LAYOUT DO RESULTADO FINAL (Novo Design) --- */
+    
+    #final-layout {
         display: flex;
         gap: 2rem;
         width: 100%;
-        max-width: 800px;
-        margin-bottom: 2rem;
-        justify-content: center;
-        flex-wrap: wrap; 
-    }
-    #quiz-final-form {
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* ISSO CENTRALIZA TUDO */
-        justify-content: center;
-        width: 100%;
-    }
-    .result-card {
-        flex: 1;
-        min-width: 250px;
-        border: 1px solid #ffffff;
-        padding: 1rem;
-        background: rgba(0, 255, 0, 0.05);
-        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+        align-items: stretch; /* Estica as colunas para mesma altura */
     }
 
+    /* Coluna da Esquerda (Tarot - Retângulo Vertical) */
+    .left-col {
+        flex: 1; /* Ocupa 1 parte do espaço */
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Coluna da Direita (Signo + Form - Retângulo Horizontal) */
+    .right-col {
+        flex: 1.5; /* Ocupa 1.5 partes (mais largo) */
+        display: flex;
+        flex-direction: column;
+        gap: 2rem; /* Espaço entre o Signo e o Input */
+    }
+
+    /* Estilo dos Cards */
+    .result-card {
+        border: 2px solid #ffffff;
+        padding: 1.5rem;
+        background: rgba(0, 0, 0, 0.7);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%; /* Preenche a coluna */
+    }
+
+    /* Imagens dentro dos cards */
     .result-card img {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
+        max-width: 100%;
+        object-fit: contain;
+        border: 1px solid #ffffff;
         margin-bottom: 1rem;
-        border-bottom: 1px solid #ffffff;
     }
 
     .result-card h3 {
@@ -306,27 +319,71 @@
         color: #ddd;
     }
 
-    /* Formulário Final */
-    #player-name {
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid #ffffff;
-      color: #fff;
-      font-family: "Geo", monospace;
-      font-size: 2rem;
-      text-align: center;
-      outline: none;
-      padding: 0.5rem;
-      margin-bottom: 2rem;
-      width: 100%;
-      max-width: 400px;
-      text-transform: uppercase;
+    /* Ajuste específico para a imagem do Tarot (Vertical) */
+    .tarot-img {
+        height: 400px !important; 
     }
-    #player-name::placeholder { color: #ffffff55; }
+
+    /* Ajuste específico para a imagem do Signo (Horizontal) */
+    .sign-img {
+        height: 200px !important; 
+        width: 100%;
+    }
+
+    /* Área do Formulário (Canto Inferior Direito) */
+    #input-area {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    /* O Input (A Linha no desenho) */
+    #player-name {
+        background: transparent;
+        border: none;
+        border-bottom: 4px solid #ffffff; /* A linha grossa */
+        color: #fff;
+        font-family: "Geo", monospace;
+        font-size: 2rem;
+        text-align: left; /* Digita da esquerda */
+        outline: none;
+        padding: 0.5rem;
+        width: 100%;
+        text-transform: uppercase;
+    }
+    #player-name::placeholder { color: #ffffff55; text-align: center; }
+
+    /* O Botão (O Retângulo pequeno embaixo) */
+    #btn-submit {
+        background: transparent;
+        color: #ffffff;
+        border: 2px solid #ffffff; /* Borda grossa */
+        padding: 1rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: 0.3s;
+        width: 100%; 
+        text-transform: uppercase;
+        font-weight: bold;
+    }
     
-    #btn-submit { background: #ffffff; color: #000; border: none; }
-    #btn-submit:hover { box-shadow: 0 0 20px #ffffff; }
-    #btn-submit:disabled { background: #555; cursor: not-allowed; }
+    #btn-submit:hover {
+        background: #ffffff;
+        color: #000;
+        box-shadow: 0 0 15px #ffffff;
+    }
+
+    /* Responsivo para Celular (Empilha tudo) */
+    @media (max-width: 768px) {
+        #final-layout {
+            flex-direction: column;
+        }
+        .left-col, .right-col {
+            flex: auto;
+            width: 100%;
+        }
+    }
 
   </style>
 </head>
@@ -366,9 +423,7 @@
     </div>
 
     <div id="quiz-final-form" style="display: none;">
-        <input type="text" id="player-name" placeholder="DIGITE SEU NOME..." autocomplete="off">
-        <button id="btn-submit">ENVIAR DADOS</button>
-    </div>
+        </div>
 </div>
 
 <script>
@@ -379,7 +434,7 @@
   const INTRO_TIME = 1000; 
   const FADE_OUT_MS = 600;
   
-  // LISTA 1: DIMENSÃO 1 (Ex: Personalidade)
+  // LISTA 1: DIMENSÃO 1 (Signos)
   const LIST_1 = {
       "G1_AQUARIO": { 
           title: "Aquário", 
@@ -391,60 +446,59 @@
           desc: "Descrição de Peixes", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/peixes.png?raw=true" 
       },
-            "G1_ARIES": { 
+      "G1_ARIES": { 
           title: "Aries", 
           desc: "Descrição de Aries", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/aries.png?raw=true" 
       },
-            "G1_TOURO": { 
+      "G1_TOURO": { 
           title: "Touro", 
           desc: "Descrição de Touro", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/touro.png?raw=true" 
       },
-            "G1_GEMEOS": { 
+      "G1_GEMEOS": { 
           title: "Gêmeos", 
           desc: "Descrição de Gêmeos", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/gemeos.png?raw=true" 
       },
-            "G1_CANCER": { 
+      "G1_CANCER": { 
           title: "Câncer", 
           desc: "Descrição de CANCER", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/cancer.png?raw=true" 
       },
-            "G1_LEAO": { 
+      "G1_LEAO": { 
           title: "Leão", 
           desc: "Descrição de LEAO", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/leao.png?raw=true" 
       },
-            "G1_VIRGEM": { 
+      "G1_VIRGEM": { 
           title: "Virgem", 
           desc: "Descrição de Virgem", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/virgem.png?raw=true" 
       },
-            "G1_LIBRA": { 
+      "G1_LIBRA": { 
           title: "Libra", 
           desc: "Descrição de libra", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/libra.png?raw=true" 
       },
-            "G1_ESCORPIAO": { 
+      "G1_ESCORPIAO": { 
           title: "Escorpião", 
           desc: "Descrição de escorpiao", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/escorpiao.png?raw=true" 
       },
-            "G1_SAGITARIO": { 
+      "G1_SAGITARIO": { 
           title: "Sagitário", 
           desc: "Descrição de Sagitário", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/sagitario.png?raw=true" 
       },
-            "G1_CAPRICORNIO": { 
+      "G1_CAPRICORNIO": { 
           title: "CAPRICORNIO", 
           desc: "Descrição de CAPRICORNIO", 
           image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/capricornio.png?raw=true" 
       },
   };
 
-  // LISTA 2: DIMENSÃO 2 (Ex: Destino/Alinhamento)
-// LISTA 2: ARCANOS MAIORES (TAROT)
+  // LISTA 2: ARCANOS MAIORES (TAROT)
   const LIST_2 = {
       "G2_FOOL": { 
           title: "FOOL", 
@@ -712,9 +766,9 @@
      5. TRANSIÇÃO (QUEDA)
      ========================================= */
 function activateContent() {
-      // --- LÓGICA DE ÁUDIO (NOVO) ---
+      // --- LÓGICA DE ÁUDIO ---
       const audio = document.getElementById("bg-audio");
-      audio.volume = 0.1; // Volume em 30% (para não assustar)
+      audio.volume = 0.1; // Volume
       audio.play().catch(error => console.log("O navegador bloqueou o áudio: ", error));
       // -------------------------------
 
@@ -736,7 +790,6 @@ function activateContent() {
       userScores = {};
 
       // Sorteia perguntas (aqui estamos usando TODAS as perguntas aleatórias)
-      // Se quiser limitar, use .slice(0, NUMERO)
       const shuffled = allQuestions.sort(() => 0.5 - Math.random());
       
       runQuizLoop(shuffled, 0);
@@ -784,7 +837,7 @@ function activateContent() {
   }
 
   function calculateAndShowResult() {
-      // 1. Calcula Vencedor da Lista 1
+      // 1. Calcula Vencedor da Lista 1 (SIGNO)
       let max1 = -1;
       let winnerKey1 = Object.keys(LIST_1)[0]; 
       
@@ -794,7 +847,7 @@ function activateContent() {
       }
       finalResult1 = LIST_1[winnerKey1];
 
-      // 2. Calcula Vencedor da Lista 2
+      // 2. Calcula Vencedor da Lista 2 (TAROT)
       let max2 = -1;
       let winnerKey2 = Object.keys(LIST_2)[0]; 
 
@@ -804,39 +857,52 @@ function activateContent() {
       }
       finalResult2 = LIST_2[winnerKey2];
 
-      // 3. Monta o HTML
+      // 3. Monta o HTML FINAL COM O NOVO LAYOUT
       quizContent.style.display = "none";
-      finalForm.style.display = "flex";
-      finalForm.style.flexDirection = "column";
+      finalForm.style.display = "block"; // Muda para block para aceitar layout customizado
 
-      const resultsWrapper = document.createElement("div");
-      resultsWrapper.id = "results-wrapper";
+      finalForm.innerHTML = ""; // Limpa
 
-      const card1 = `
-        <div class="result-card">
-            <h3 class="glitch-text">${finalResult1.title}</h3>
-            <img src="${finalResult1.image}" alt="${finalResult1.title}">
-            <p>${finalResult1.desc}</p>
+      const layoutHTML = `
+        <div id="final-layout">
+            
+            <div class="left-col">
+                <div class="result-card">
+                    <h3 class="glitch-text" style="color:#ffffff">${finalResult2.title}</h3>
+                    <img src="${finalResult2.image}" class="tarot-img" alt="${finalResult2.title}">
+                    <p>${finalResult2.desc}</p>
+                </div>
+            </div>
+
+            <div class="right-col">
+                
+                <div class="result-card">
+                    <h3 class="glitch-text" style="color:#ffffff">${finalResult1.title}</h3>
+                    <img src="${finalResult1.image}" class="sign-img" alt="${finalResult1.title}">
+                    <p>${finalResult1.desc}</p>
+                </div>
+
+                <div id="input-area">
+                    <input type="text" id="player-name" placeholder="DIGITE SEU NOME" autocomplete="off">
+                    <button id="btn-submit">ENVIAR DADOS</button>
+                </div>
+
+            </div>
         </div>
       `;
 
-      const card2 = `
-        <div class="result-card">
-            <h3 class="glitch-text">${finalResult2.title}</h3>
-            <img src="${finalResult2.image}" alt="${finalResult2.title}">
-            <p>${finalResult2.desc}</p>
-        </div>
-      `;
+      finalForm.innerHTML = layoutHTML;
 
-      resultsWrapper.innerHTML = card1 + card2;
-      finalForm.insertBefore(resultsWrapper, nameInput);
+      // RECONECTA O BOTÃO
+      document.getElementById("btn-submit").addEventListener("click", submitData);
   }
 
-  /* =========================================
-     7. ENVIO FORMSPREE
-     ========================================= */
-  submitBtn.addEventListener("click", () => {
+  // Função de Envio (Separada para ser chamada no novo HTML)
+  function submitData() {
+      const nameInput = document.getElementById("player-name");
+      const submitBtn = document.getElementById("btn-submit");
       const name = nameInput.value.trim();
+      
       if(!name) {
           alert("IDENTIFICAÇÃO NECESSÁRIA.");
           return;
@@ -850,8 +916,8 @@ function activateContent() {
 
       const dataToSend = {
           name: name,
-          result_1: finalResult1.title,
-          result_2: finalResult2.title,
+          signo: finalResult1.title,
+          tarot: finalResult2.title,
           full_scores: JSON.stringify(userScores),
           _subject: `Novo: ${name} (${finalResult1.title} + ${finalResult2.title})`
       };
@@ -863,9 +929,12 @@ function activateContent() {
       })
       .then(response => {
           if (response.ok) {
-              finalForm.innerHTML = `
-                  <h2 class='glitch-text' style='color:#ffffff'>REGISTRO CONFIRMADO.</h2>
-                  <p>VOCÊ FAZ PARTE DO SISTEMA AGORA.</p>
+              const finalDiv = document.getElementById("final-layout");
+              finalDiv.innerHTML = `
+                  <div style="width:100%; text-align:center; padding: 4rem;">
+                      <h2 class='glitch-text' style='color:#ffffff; font-size: 3rem;'>REGISTRO CONFIRMADO.</h2>
+                      <p style="font-size: 1.5rem; margin-top: 1rem;">VOCÊ FAZ PARTE DO SISTEMA AGORA.</p>
+                  </div>
               `;
           } else {
               throw new Error("Erro no servidor");
@@ -877,7 +946,7 @@ function activateContent() {
           submitBtn.innerText = "ENVIAR DADOS";
           submitBtn.disabled = false;
       });
-  });
+  }
 
   /* =========================================
      8. BOTÕES INICIAIS
