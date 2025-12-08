@@ -9,11 +9,15 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-image: url("background.jpg"); /* <-- sua imagem de fundo */
+      background-image: url("background.jpg"); 
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center; /* centraliza vertical */
     }
 
     /* Splash */
@@ -29,22 +33,17 @@
       align-items: center;
       z-index: 9999;
       opacity: 1;
-      transition: opacity 1s ease;
+      transition: opacity 0.4s ease; /* fade-out mais rápido */
     }
 
-    /* Caixa de conteúdo */
+    /* Conteúdo do site (texto centralizado) */
     .main-content {
       opacity: 0;
-      transition: opacity 1s ease;
-
+      transition: opacity 0.6s ease;
+      color: white;
+      text-align: center;
+      padding: 20px;
       max-width: 900px;
-      margin: 60px auto; /* centraliza horizontalmente + espaço no topo */
-      background: rgba(50, 50, 50, 0.8); /* cinza com transparência */
-      padding: 30px;
-      border-radius: 15px;
-      color: white; /* texto fica branco */
-      box-shadow: 0 0 20px rgba(0,0,0,0.5); /* sombra para destacar */
-      backdrop-filter: blur(4px); /* Efeito moderno (opcional) */
     }
 
     .main-content.visible {
@@ -67,29 +66,26 @@
 
   <!-- Conteúdo -->
   <div class="main-content" id="content">
-    <h1>Bem-vindo ao meu site!</h1>
-    <p>Aqui vai o conteúdo dentro da caixa cinza flutuante.</p>
-
-    <img src="img1.png" alt="">
-    <img src="img2.jpg" alt="">
+    <h1>Bem-vindo!</h1>
+    <p>O texto agora está centralizado no meio da tela, sem caixa visível!</p>
   </div>
 
   <script>
-    const GIF_DURATION = 2000;
+    const GIF_DURATION = 1000; // 5 segundos independente do GIF
 
     window.onload = () => {
       setTimeout(() => {
         const splash = document.getElementById('splash');
         const content = document.getElementById('content');
 
+        // fade-out rápido (0.4s)
         splash.style.opacity = 0;
 
         setTimeout(() => {
           splash.style.display = "none";
           content.classList.add("visible");
           document.body.style.overflow = "auto";
-        }, 1000);
-
+        }, 400); // igual ao tempo do fade
       }, GIF_DURATION);
     };
   </script>
