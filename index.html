@@ -8,39 +8,42 @@
         body {
             margin: 0;
             padding: 0;
-            background-image: url("background.jpg"); /* imagem de fundo */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            font-family: Arial, sans-serif;
+            overflow: hidden; /* evita rolagem durante o GIF */
         }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background-color: rgba(255, 255, 255, 0.8); /* leve transparência */
-            padding: 20px;
-            border-radius: 10px;
+        /* Tela de abertura com o GIF */
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black; /* fundo do splash */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
         }
 
-        img {
-            max-width: 100%;
-            margin: 10px 0;
-            border-radius: 10px;
+        /* Conteúdo do site */
+        .main-content {
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .main-content.visible {
+            opacity: 1;
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Bem-vindo ao Meu Site!</h1>
-        <p>Aqui posso adicionar imagens livremente:</p>
 
-        <!-- Exemplo de imagens -->
-        <img src="img1.png" alt="Imagem 1">
-        <img src="img2.jpg" alt="Imagem 2">
-        <img src="img3.png" alt="Imagem 3">
-
+    <!-- Splash screen com GIF -->
+    <div id="splash">
+        <img src="gif.gif" id="gif" alt="Abertura">
     </div>
-</body>
-</html>
+
+    <!-- Conteúdo real do site -->
+    <div class="main-content" id="content">
+        <h1>M
