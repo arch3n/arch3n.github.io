@@ -5,21 +5,23 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>A QUEDA</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Geo:ital@0;1&family=VT323&display=swap" rel="stylesheet">
   <style>
     :root {
       --blur-amount: 8px;
-      --type-speed: 50; /* ms por caractere */
     }
 
     html, body {
       height: 100%;
       margin: 0;
       background-color: #000;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: "Geo", monospace; 
       color: #fff;
     }
 
-    /* CAMADA DO FUNDO */
+    /* FUNDO */
     #background-layer {
       position: fixed;
       inset: 0;
@@ -31,12 +33,11 @@
       opacity: 1;
     }
 
-    /* blur aplicado só depois */
     #background-layer.blurred {
       filter: blur(var(--blur-amount));
     }
 
-    /* INTRO GIF */
+    /* INTRO */
     #intro {
       position: fixed;
       inset: 0;
@@ -54,7 +55,7 @@
       object-fit: cover;
     }
 
-    /* TEXTO CENTRAL */
+    /* CONTEÚDO */
     #content {
       position: relative;
       z-index: 30;
@@ -73,78 +74,103 @@
       opacity: 1;
     }
 
+    /* --- ANIMAÇÃO DE ESTÁTICA (RGB SPLIT) --- */
+    @keyframes static-vibrate {
+      0% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
+      25% { text-shadow: -2px 0 #ff0000, 2px 0 #00ffff; }
+      50% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
+      75% { text-shadow: -2px 0 #ff0000, 2px 0 #00ffff; }
+      100% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
+    }
+
+    .glitch-text {
+        animation: static-vibrate 0.1s infinite; 
+    }
+
+    /* TEXTOS */
+    .typewriter {
+        font-size: 2.5rem; 
+        margin-bottom: 1rem;
+        letter-spacing: 2px; 
+    }
+    
+    p.typewriter {
+        font-size: 1.5rem; 
+    }
+
+    /* BOTÕES */
     #choice-buttons {
-      margin-top: 2rem;
+      margin-top: 3rem;
       display: flex;
-      gap: 1rem;
+      gap: 2rem;
     }
 
     button {
-      padding: 0.7rem 1.4rem;
+      padding: 1rem 2.5rem; 
       border: none;
-      border-radius: 8px;
+      border-radius: 4px;
       background: #ffffffcc;
       color: #000;
-      font-size: 1rem;
+      font-size: 1.5rem; 
       cursor: pointer;
-      transition: transform .15s;
+      transition: transform .15s, background .2s;
+      font-weight: bold;
+      min-width: 120px; 
+      font-family: "Geo", monospace; 
+      text-transform: uppercase; 
     }
 
     button:hover {
-      transform: scale(1.06);
+      transform: scale(1.1);
     }
 
-    /* Conteúdo adicional (SIM) */
+    /* BUG DO BOTÃO */
+    @keyframes glitch-anim {
+      0% { transform: translate(0) skew(0deg); }
+      20% { transform: translate(-2px, 2px) skew(-10deg); }
+      40% { transform: translate(-2px, -2px) skew(10deg); }
+      60% { transform: translate(2px, 2px) skew(-5deg); }
+      80% { transform: translate(2px, -2px) skew(5deg); }
+      100% { transform: translate(0) skew(0deg); }
+    }
+
+    .bug-effect {
+        animation: glitch-anim 0.2s infinite; 
+    }
+
+    /* EXTRA CONTENT */
     #extra-content {
       opacity: 0;
       visibility: hidden;
       transition: opacity .6s ease;
-      margin-top: 2rem;
+      margin-top: 3rem;
     }
 
     #extra-content.visible {
       opacity: 1;
       visibility: visible;
     }
-
-    /* BLOCO "NÃO" */
-    #block-screen {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #000;
-      z-index: 99999;
-      color: white;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 1.5rem;
-      padding: 1rem;
+    
+    #extra-content h2 {
+        font-size: 2.5rem;
+    }
+    #extra-content p {
+        font-size: 1.5rem;
     }
   </style>
 </head>
 
 <body>
 
-<div id="block-screen">
-    <div>
-        <h1>Volte quando estiver preparado.</h1>
-        <p><strong>Ctrl + R</strong></p>
-    </div>
-</div>
-
-<!-- Fundo (recebe o gif depois) -->
 <div id="background-layer"></div>
 
-<!-- Intro GIF -->
 <div id="intro">
     <img id="intro-gif" src="gif.gif" alt="Intro">
 </div>
 
-<!-- Conteúdo -->
 <main id="content">
-    <h1 class="typewriter" data-text="Bem vindo."></h1>
-    <p class="typewriter" data-text="Me diga, você está preparado para a queda?"></p>
+    <h1 class="typewriter glitch-text" data-text="Bem vindo."></h1>
+    <p class="typewriter glitch-text" data-text="Me diga, você está preparado para a queda?"></p>
 
     <div id="choice-buttons">
         <button id="btn-yes">Sim</button>
@@ -152,14 +178,14 @@
     </div>
 
     <div id="extra-content">
-        <h2>Ótimo. Vamos começar.</h2>
+        <h2 class="glitch-text">Ótimo. Vamos começar.</h2>
         <p></p>
     </div>
 </main>
 
 <script>
 (function () {
-  const INTRO_TIME = 1000; // ← 1s
+  const INTRO_TIME = 1000; 
   const FADE_OUT_MS = 600;
 
   const intro = document.getElementById('intro');
@@ -167,7 +193,6 @@
   const bg = document.getElementById('background-layer');
   const content = document.getElementById('content');
   const extra = document.getElementById("extra-content");
-  const block = document.getElementById("block-screen");
 
   let gifLoaded = false;
 
@@ -184,24 +209,21 @@
   window.addEventListener('load', () => {
     setTimeout(() => {
       const src = gifLoaded ? introGif.src : 'background.jpg';
-
       setBackground(src);
-      bg.classList.add('blurred'); // BLUR NO FUNDO
-
+      bg.classList.add('blurred'); 
       intro.style.opacity = "0";
-
       setTimeout(() => {
         intro.style.display = "none";
         content.classList.add("visible");
         startTypewriter();
       }, FADE_OUT_MS);
-
     }, INTRO_TIME);
   });
 
   /* TYPEWRITER */
   function startTypewriter() {
     const els = document.querySelectorAll('.typewriter');
+    let finishedCount = 0; 
     els.forEach(el => {
       const text = el.dataset.text;
       el.textContent = "";
@@ -210,23 +232,92 @@
         if (i < text.length) {
           el.textContent += text[i++];
           setTimeout(step, 50);
+        } else {
+            finishedCount++;
+            if(finishedCount === els.length) {
+                startPassiveGlitchSystem(); 
+            }
         }
       }
       step();
     });
   }
 
-  /* BOTÕES */
-  document.getElementById("btn-yes").addEventListener("click", () => {
-    extra.classList.add("visible");
-  });
+  /* PASSIVE GLITCH */
+  function startPassiveGlitchSystem() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*<>?[]{}";
+    function triggerGlitch() {
+        const visibleElements = Array.from(document.querySelectorAll('.glitch-text'))
+            .filter(el => el.offsetParent !== null && el.textContent.length > 0);
+        if (visibleElements.length === 0) {
+            scheduleNextGlitch(); return;
+        }
+        const randomEl = visibleElements[Math.floor(Math.random() * visibleElements.length)];
+        const originalText = randomEl.textContent;
+        const textArray = originalText.split('');
+        const glitchCount = Math.floor(Math.random()) + 1; 
+        for(let k=0; k<glitchCount; k++){
+            const index = Math.floor(Math.random() * textArray.length);
+            if(textArray[index] !== ' ') {
+                textArray[index] = chars[Math.floor(Math.random()*5 * chars.length)];
+            }
+        }
+        randomEl.textContent = textArray.join('');
+        setTimeout(() => {
+            randomEl.textContent = originalText;
+            scheduleNextGlitch(); 
+        }, Math.random() * 100 + 50);
+    }
+    function scheduleNextGlitch() {
+        const delay = Math.random() * 1000 + 1000;
+        setTimeout(triggerGlitch, delay);
+    }
+    scheduleNextGlitch();
+  }
 
-  document.getElementById("btn-no").addEventListener("click", () => {
-    block.style.display = "flex";
+  /* BOTÕES */
+  const btnYes = document.getElementById("btn-yes");
+  const btnNo = document.getElementById("btn-no");
+
+function activateContent() {
+      // 1. Mostra o texto "Ótimo. Vamos começar."
+      extra.classList.add("visible");
+      
+      // 2. Espera 3 segundos para a pessoa ler
+      setTimeout(() => {
+          // 3. Ativa a classe que faz tudo cair
+          content.classList.add("falling");
+      }, 1000); 
+  }
+
+  btnYes.addEventListener("click", activateContent);
+  
+  btnNo.addEventListener("mouseover", () => {
+      if (btnNo.dataset.transformed === "true") return; 
+      btnNo.dataset.transformed = "true"; 
+      btnNo.classList.add("bug-effect"); 
+      const targetText = "Sim";
+      const possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*"; 
+      let iteration = 0;
+      const interval = setInterval(() => {
+          btnNo.innerText = targetText
+            .split("")
+            .map((letter, index) => {
+                if(index < iteration) return targetText[index];
+                return possibleChars[Math.floor(Math.random() * possibleChars.length)];
+            })
+            .join("");
+          if(iteration >= targetText.length) { 
+              clearInterval(interval);
+              btnNo.innerText = targetText; 
+              btnNo.classList.remove("bug-effect"); 
+          }
+          iteration += 1 / 3; 
+      }, 50); 
   });
+  btnNo.addEventListener("click", activateContent);
 
 })();
 </script>
-
 </body>
 </html>
