@@ -197,7 +197,23 @@
         object-fit: contain;
         box-shadow: 0 0 15px #ffffff;
     }
-
+    /* Estilo do Título Fixo do Quiz */
+    .quiz-header {
+        font-size: 3.5rem; /* Bem grande */
+        color: #fff;
+        margin-bottom: 2rem;
+        text-align: center;
+        text-shadow: 0 0 10px #ffffff; /* Brilho verde hacker */
+        line-height: 1.1;
+        width: 100%;
+    }
+    
+    /* Ajuste para celular (opcional, para não quebrar a tela) */
+    @media (max-width: 600px) {
+        .quiz-header {
+            font-size: 2.5rem;
+        }
+    }
     #quiz-question {
       font-size: 2rem;
       margin-bottom: 2rem;
@@ -332,6 +348,7 @@
 
 <div id="quiz-container">
     <div id="quiz-content">
+      <h1 class="quiz-header glitch-text">QUEM VOCÊ QUER SER?</h1>
         <img id="quiz-image" src="" alt="Imagem da Pergunta">
         
         <h2 id="quiz-question" class="glitch-text">...</h2>
@@ -354,16 +371,66 @@
   
   // LISTA 1: DIMENSÃO 1 (Ex: Personalidade)
   const LIST_1 = {
-      "G1_TIPO_A": { 
-          title: "TIPO A (PLACEHOLDER)", 
-          desc: "Descrição do Resultado da Lista 1 - Tipo A.", 
-          image: "https://via.placeholder.com/300x200/003300/00ff00?text=IMG+TIPO+A" 
+      "G1_AQUARIO": { 
+          title: "Aquário", 
+          desc: "Descrição de Aquário", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/aquario.png?raw=true" 
       },
-      "G1_TIPO_B": { 
-          title: "TIPO B (PLACEHOLDER)", 
-          desc: "Descrição do Resultado da Lista 1 - Tipo B.", 
-          image: "https://via.placeholder.com/300x200/003300/00ff00?text=IMG+TIPO+B" 
-      }
+      "G1_PEIXES": { 
+          title: "Peixes", 
+          desc: "Descrição de Peixes", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/peixes.png?raw=true" 
+      },
+            "G1_ARIES": { 
+          title: "Aries", 
+          desc: "Descrição de Aries", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/aries.png?raw=true" 
+      },
+            "G1_TOURO": { 
+          title: "Touro", 
+          desc: "Descrição de Touro", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/touro.png?raw=true" 
+      },
+            "G1_GEMEOS": { 
+          title: "Gêmeos", 
+          desc: "Descrição de Gêmeos", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/gemeos.png?raw=true" 
+      },
+            "G1_CANCER": { 
+          title: "Câncer", 
+          desc: "Descrição de CANCER", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/cancer.png?raw=true" 
+      },
+            "G1_LEAO": { 
+          title: "Leão", 
+          desc: "Descrição de LEAO", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/leao.png?raw=true" 
+      },
+            "G1_VIRGEM": { 
+          title: "Virgem", 
+          desc: "Descrição de Virgem", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/virgem.png?raw=true" 
+      },
+            "G1_LIBRA": { 
+          title: "Libra", 
+          desc: "Descrição de libra", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/libra.png?raw=true" 
+      },
+            "G1_ESCORPIAO": { 
+          title: "Escorpião", 
+          desc: "Descrição de escorpiao", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/escorpiao.png?raw=true" 
+      },
+            "G1_SAGITARIO": { 
+          title: "Sagitário", 
+          desc: "Descrição de Sagitário", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/sagitario.png?raw=true" 
+      },
+            "G1_CAPRICORNIO": { 
+          title: "CAPRICORNIO", 
+          desc: "Descrição de CAPRICORNIO", 
+          image: "https://github.com/arch3n/arch3n.github.io/blob/main/signos/capricornio.png?raw=true" 
+      },
   };
 
   // LISTA 2: DIMENSÃO 2 (Ex: Destino/Alinhamento)
@@ -390,15 +457,15 @@
           options: [
               { 
                   text: "Opção que dá pontos para A e X", 
-                  weights: { "G1_TIPO_A": 3, "G2_TIPO_X": 2 } 
+                  weights: { "G1_AQUARIO": 3, "G2_TIPO_X": 2 } 
               },
               { 
                   text: "Opção que dá pontos para B e Y", 
-                  weights: { "G1_TIPO_B": 3, "G2_TIPO_Y": 2 } 
+                  weights: { "G1_PEIXES": 3, "G2_TIPO_Y": 2 } 
               },
               { 
                   text: "Opção mista", 
-                  weights: { "G1_TIPO_A": 1, "G1_TIPO_B": 1, "G2_TIPO_X": 1 } 
+                  weights: { "G1_AQUARIO": 1, "G1_PEIXES": 1, "G2_TIPO_X": 1 } 
               }
           ]
       },
@@ -408,16 +475,16 @@
           options: [
               { text: "Foco total em X", weights: { "G2_TIPO_X": 5 } },
               { text: "Foco total em Y", weights: { "G2_TIPO_Y": 5 } },
-              { text: "Foco total em A", weights: { "G1_TIPO_A": 5 } },
-              { text: "Foco total em B", weights: { "G1_TIPO_B": 5 } }
+              { text: "Foco total em A", weights: { "G1_AQUARIO": 5 } },
+              { text: "Foco total em B", weights: { "G1_PEIXES": 5 } }
           ]
       },
       { 
           text: "PERGUNTA 3 (PLACEHOLDER)", 
           image: "",
           options: [
-              { text: "Opção Genérica 1", weights: { "G1_TIPO_A": 2, "G2_TIPO_Y": 2 } },
-              { text: "Opção Genérica 2", weights: { "G1_TIPO_B": 2, "G2_TIPO_X": 2 } }
+              { text: "Opção Genérica 1", weights: { "G1_AQUARIO": 2, "G2_TIPO_Y": 2 } },
+              { text: "Opção Genérica 2", weights: { "G1_PEIXES": 2, "G2_TIPO_X": 2 } }
           ]
       }
       // COPIE E COLE OS BLOCOS ACIMA PARA CRIAR MAIS PERGUNTAS
