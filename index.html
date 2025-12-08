@@ -29,3 +29,70 @@
       align-items: center;
       z-index: 9999;
       opacity: 1;
+      transition: opacity 1s ease;
+    }
+
+    /* Caixa de conteúdo */
+    .main-content {
+      opacity: 0;
+      transition: opacity 1s ease;
+
+      max-width: 900px;
+      margin: 60px auto; /* centraliza horizontalmente + espaço no topo */
+      background: rgba(50, 50, 50, 0.8); /* cinza com transparência */
+      padding: 30px;
+      border-radius: 15px;
+      color: white; /* texto fica branco */
+      box-shadow: 0 0 20px rgba(0,0,0,0.5); /* sombra para destacar */
+      backdrop-filter: blur(4px); /* Efeito moderno (opcional) */
+    }
+
+    .main-content.visible {
+      opacity: 1;
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Splash -->
+  <div id="splash">
+    <img src="gif.gif" alt="Abertura">
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="main-content" id="content">
+    <h1>Bem-vindo ao meu site!</h1>
+    <p>Aqui vai o conteúdo dentro da caixa cinza flutuante.</p>
+
+    <img src="img1.png" alt="">
+    <img src="img2.jpg" alt="">
+  </div>
+
+  <script>
+    const GIF_DURATION = 2000;
+
+    window.onload = () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        const content = document.getElementById('content');
+
+        splash.style.opacity = 0;
+
+        setTimeout(() => {
+          splash.style.display = "none";
+          content.classList.add("visible");
+          document.body.style.overflow = "auto";
+        }, 1000);
+
+      }, GIF_DURATION);
+    };
+  </script>
+
+</body>
+</html>
