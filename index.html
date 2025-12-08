@@ -89,6 +89,11 @@
     }
   </style>
 </head>
+<div id="block-screen">
+    <h1>Acesso negado.</h1>
+    <p>Pressione <strong>Ctrl + R</strong> para tentar novamente.</p>
+</div>
+
 <body>
 
   <!-- camada do fundo que receberá o GIF (após intro) -->
@@ -100,12 +105,24 @@
   </div>
 
   <!-- conteúdo com typewriter -->
-  <main id="content" role="main" aria-live="polite">
-    <div>
-      <h1 class="text-glow typewriter" data-text="Bem-vinda!"></h1>
-      <p class="typewriter" data-text="Aqui é o seu site — o GIF virou o fundo com blur."></p>
+<main id="content">
+    <div id="main-initial">
+        <h1 class="typewriter" data-text="Bem-vinda!"></h1>
+        <p class="typewriter" data-text="Aqui é o seu site — o GIF virou o fundo com blur."></p>
+
+        <!-- Botões -->
+        <div id="choice-buttons">
+            <button id="btn-yes">Sim</button>
+            <button id="btn-no">Não</button>
+        </div>
     </div>
-  </main>
+
+    <!-- Conteúdo escondido que só aparece ao clicar SIM -->
+    <div id="extra-content">
+        <h2>Conteúdo liberado!</h2>
+        <p>Aqui você pode colocar imagens, textos, menus, etc.</p>
+    </div>
+</main>
 
 <script>
 /*
@@ -119,7 +136,7 @@
 */
 
 (function () {
-  const INTRO_TIME = 5000; // 5 segundos fixos
+  const INTRO_TIME = 1400; // 5 segundos fixos
   const FADE_OUT_MS = 600; // tempo da transição de opacidade para esconder intro
 
   const intro = document.getElementById('intro');
@@ -195,6 +212,22 @@
       step();
     });
   }
+// Botões
+const btnYes = document.getElementById("btn-yes");
+const btnNo = document.getElementById("btn-no");
+const extra = document.getElementById("extra-content");
+const block = document.getElementById("block-screen");
+
+// Clique no SIM
+btnYes.addEventListener("click", () => {
+    extra.classList.add("visible");
+});
+
+// Clique no NÃO
+btnNo.addEventListener("click", () => {
+    block.style.display = "flex";  // mostra a tela preta
+});
+
 
   // Segurança extra: se JS estiver bloqueado, mostramos o background.jpg estático
   // (isso garante que a página não fique branca se JS falhar)
@@ -211,7 +244,7 @@
   </style>
   <div style="position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:999">
     <div style="text-align:center; color:#fff; padding:1rem">
-      <h1>Bem-vinda!</h1>
+      <h1>Bem-vindo!</h1>
       <p>Seu navegador não possui JavaScript habilitado — atualize a página para ver a animação.</p>
     </div>
   </div>
