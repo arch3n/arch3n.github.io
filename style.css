@@ -1,0 +1,225 @@
+:root {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+}
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Georgia', serif;
+    line-height: 1.5;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+    position: relative;
+    
+    /* REGRAS ATUALIZADAS PARA ELIMINAR A SCROLLBAR */
+    height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden; /* Corta totalmente qualquer rolagem da página */
+}
+
+p > .char-span:first-child,
+p > .word-glitch:first-child {
+    margin-left: 2rem;
+}
+
+/* Clean, guaranteed indent class applied directly by JS */
+.indent {
+    margin-left: 2rem;
+}
+
+/* --- SUBTLE TV STATIC BACKGROUND --- */
+body::after {
+    content: "";
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    width: 200vw;
+    height: 200vh;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.05; 
+    pointer-events: none;
+    z-index: 999;
+    animation: tv-static 0.2s steps(4) infinite;
+    
+}
+
+@keyframes tv-static {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-5%, -5%); }
+    50% { transform: translate(10%, 5%); }
+    75% { transform: translate(-5%, 10%); }
+    100% { transform: translate(5%, -5%); }
+}
+
+/* --- UNBOXED CONFIRMATION PROMPT --- */
+#confirm-container {
+    text-align: center;
+    padding: 6rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.confirm-prompt {
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    color: #888890;
+    margin-bottom: 2rem;
+}
+
+#confirm-user-btn {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.8rem 1.8rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#confirm-user-btn:hover {
+    background: #ffffff;
+    color: #000000;
+}
+
+/* --- UNBOXED TEXT CONTENT --- */
+main {
+    position: relative;
+    z-index: 1;
+    height: 100%; /* Ocupa exatamente a área disponível dentro do body */
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+    letter-spacing: 1px;
+}
+
+p {
+    margin-bottom: 1.8rem;
+    text-align: justify;
+    color: #e1e1e6;
+}
+
+/* --- INTERACTIVE WORD PRE-REVEAL & TYPING STYLE --- */
+.word-glitch {
+    display: inline-block;
+    cursor: pointer;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.4);
+    animation: pre-reveal-glitch 3.5s ease-in-out infinite;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+@keyframes pre-reveal-glitch {
+    0%, 100% { opacity: 0.85; transform: translate(0, 0); }
+    40% { opacity: 0.35; transform: translate(0, 0); }
+    85% { opacity: 0.85; transform: translate(0, 0); }
+    88% { opacity: 0.2; transform: translate(-2px, 1px); text-shadow: -1px 0 #ff0000, 1px 0 #00ffff; }
+    91% { opacity: 1; transform: translate(1px, -1px); text-shadow: none; }
+    94% { opacity: 0.4; transform: translate(-1px, 1px); }
+}
+
+.word-glitch.typing {
+    animation: none !important;
+    color: #ffffff;
+    border-bottom-color: #ffffff;
+    text-shadow: none !important;
+}
+
+.word-glitch.revealed {
+    animation: none !important;
+    color: #ffffff !important;
+    text-shadow: none !important;
+    border-bottom: none !important;
+    cursor: default;
+}
+
+.char-span {
+    display: inline;
+}
+
+/* Quick glitch burst triggered dynamically by JS */
+.flicker {
+    animation: quick-glitch-burst 0.2s steps(2) infinite;
+}
+
+@keyframes quick-glitch-burst {
+    0% { 
+        opacity: 0.2; 
+        transform: translate(-1px, 1px); 
+        color: #888890;
+    }
+    50% { 
+        opacity: 0.9; 
+        transform: translate(1px, -1px); 
+    }
+    100% { 
+        opacity: 0.1; 
+        transform: translate(0, 0); 
+    }
+}
+
+/* --- ACATA TEXT REVEAL & STYLING --- */
+@keyframes aparecerLentamente {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.revelacao-temporal {
+    opacity: 0; /* Inicia invisível */
+    animation-name: aparecerLentamente;
+    animation-duration: 3.5s;
+    animation-fill-mode: forwards;
+    will-change: opacity, transform;
+
+    /* ALINHAMENTO E POSICIONAMENTO À DIREITA */
+    text-align: right !important; /* Alinha o texto à direita */
+    margin-left: auto !important;  /* Empurra o bloco para a direita */
+    max-width: 65%;               /* Limita a largura para criar o efeito de bloco recuado */
+    margin-bottom: 0.3rem;
+    /* ESTILIZAÇÃO DO ACATA */
+    font-family: 'Courier New', Courier, monospace;
+    color: #c8c8d0;
+    line-height: 1;
+}
+
+/* Delays sequenciais após a confirmação */
+.revelacao-temporal.delay-1 {
+    margin-top: auto !important;
+    animation-delay: 30s;
+}
+.delay-2 {
+    animation-delay: 33s;
+}
+.delay-3 {
+    animation-delay: 36s;
+}
+.delay-4 {
+    animation-delay: 50s;
+}
+
+/* --- IMAGEM NO CANTO INFERIOR ESQUERDO --- */
+.imagem-canto-esquerdo {
+    position: fixed;
+    bottom: 2rem;       /* Distância do fundo da tela */
+    left: 2rem;         /* Distância da borda esquerda */
+    width: 150px;       /* Ajuste a largura desejada */
+    height: auto;       /* Mantém a proporção da imagem */
+    opacity: 0.8;       /* Opcional: opacidade para combinar com a estética escuro/mistério */
+    z-index: 100;       /* Garante que fique acima do fundo de estática */
+    pointer-events: none; /* Opcional: impede que a imagem clique/interfira no texto */
+}
