@@ -227,13 +227,20 @@ p {
 .glitch-box-center {
   width: 100%;
   max-width: 500px;
-  margin: 2.5rem auto;
-  display: block;
+  flex: 1;             /* Dynamic expansion: fills remaining vertical screen space */
+  min-height: 0;        /* Prevents flex container overflow */
+  margin: 0 auto;       /* Removed top/bottom margin to avoid pushing the container down */
+  display: flex;
+  align-items: center;  /* Centers image vertically in remaining space */
+  justify-content: center;
 }
 
 .img-flicker {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;     /* Constrains image height to remaining container space */
+  width: auto;
   height: auto;
+  object-fit: contain;  /* Scales image nicely without distortion */
   display: block;
   opacity: 0.9;
   box-sizing: border-box; /* Ensures the border doesn't expand the image size */
@@ -261,48 +268,63 @@ p {
 }
 .dual-word-glitch {
   font-family: 'Great Vibes', cursive;
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: 400;
   text-align: center;
   color: #ffffff;
-  margin: 2.5rem auto;
-  min-height: 4.5rem;
+  
+  /* Pulls the block up without affecting lower content */
+  margin: 0.5rem auto 1rem auto; 
+  
+  /* Lock the container dimensions so jitter never expands it */
+  height: 4rem; 
+  line-height: 4rem;
   position: relative;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .dual-word-glitch::before {
   content: attr(data-word1);
+  position: absolute; /* Detaches jitter movement from the page layout flow */
+  white-space: nowrap;
   animation: rare-swap-mono-jitter 2s infinite steps(1);
 }
 
 @keyframes rare-swap-mono-jitter {
-  /* Word 1 - Dominant Base (0% to 49%) */
+  /* Word 1 - Dominant Base */
   0% { content: attr(data-word1); opacity: 0.95; transform: translate(0, 0) skew(0deg); text-shadow: none; }
   
-  /* Monochromatic Jitters (Word 1) */
-  4% { content: attr(data-word1); opacity: 0.1; transform: translate(-8px, 5px) skew(12deg) scale(1.05); text-shadow: 4px 0 #ffffff; }
-  6% { content: attr(data-word1); opacity: 0.95; transform: translate(6px, -4px) skew(-8deg); text-shadow: -3px 0 #000000; }
+  /* Large Vertical Jitters (Now safely contained without pushing the page) */
+  4% { content: attr(data-word1); opacity: 0.1; transform: translate(-8px, 8px) skew(12deg) scale(1.05); text-shadow: 4px 0 #ffffff; }
+  6% { content: attr(data-word1); opacity: 0.95; transform: translate(6px, -6px) skew(-8deg); text-shadow: -3px 0 #000000; }
   8% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
   
-  22% { content: attr(data-word1); opacity: 0.15; transform: translate(10px, -6px) skew(-15deg); text-shadow: -5px 0 #ffffff, 5px 0 #000000; }
-  24% { content: attr(data-word1); opacity: 0.95; transform: translate(-4px, 3px) skew(5deg); text-shadow: 3px 0 #ffffff; }
+  22% { content: attr(data-word1); opacity: 0.15; transform: translate(10px, -10px) skew(-15deg); text-shadow: -5px 0 #ffffff, 5px 0 #000000; }
+  24% { content: attr(data-word1); opacity: 0.95; transform: translate(-4px, 5px) skew(5deg); text-shadow: 3px 0 #ffffff; }
   26% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
 
-  /* Very Brief Flash of Word 2 (50% to 58% only) */
-  50% { content: attr(data-word1); opacity: 0.05; transform: translate(-12px, -8px) skew(20deg) scale(0.95); text-shadow: 6px 0 #ffffff; }
-  52% { content: attr(data-word2); opacity: 0.95; transform: translate(8px, 6px) skew(-10deg) scale(1.08); text-shadow: -5px 0 #ffffff, 5px 0 #000000; }
-  55% { content: attr(data-word2); opacity: 0.2; transform: translate(-5px, -3px) skew(4deg); text-shadow: 4px 0 #ffffff; }
+  /* Very Brief Flash of Word 2 */
+  50% { content: attr(data-word1); opacity: 0.05; transform: translate(-12px, -12px) skew(20deg) scale(0.95); text-shadow: 6px 0 #ffffff; }
+  52% { content: attr(data-word2); opacity: 0.95; transform: translate(8px, 10px) skew(-10deg) scale(1.08); text-shadow: -5px 0 #ffffff, 5px 0 #000000; }
+  55% { content: attr(data-word2); opacity: 0.2; transform: translate(-5px, -4px) skew(4deg); text-shadow: 4px 0 #ffffff; }
   58% { content: attr(data-word2); opacity: 0.85; transform: translate(3px, -2px) skew(-6deg); text-shadow: none; }
 
-  /* Quick Snap Back to Word 1 (59% to 100%) */
-  59% { content: attr(data-word1); opacity: 0.1; transform: translate(-10px, 8px) skew(18deg) scale(1.04); text-shadow: 6px 0 #ffffff; }
-  61% { content: attr(data-word1); opacity: 0.95; transform: translate(9px, -5px) skew(-14deg); text-shadow: -6px 0 #ffffff, 6px 0 #000000; }
+  /* Quick Snap Back to Word 1 */
+  59% { content: attr(data-word1); opacity: 0.1; transform: translate(-10px, 12px) skew(18deg) scale(1.04); text-shadow: 6px 0 #ffffff; }
+  61% { content: attr(data-word1); opacity: 0.95; transform: translate(9px, -8px) skew(-14deg); text-shadow: -6px 0 #ffffff, 6px 0 #000000; }
   63% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
 
-  /* Final Pre-loop Jitter (Word 1) */
-  86% { content: attr(data-word1); opacity: 0.05; transform: translate(-11px, -6px) skew(-18deg) scale(1.06); text-shadow: -7px 0 #ffffff; }
-  88% { content: attr(data-word1); opacity: 0.95; transform: translate(5px, 3px) skew(6deg); text-shadow: 3px 0 #000000; }
+  /* Final Pre-loop Jitter */
+  86% { content: attr(data-word1); opacity: 0.05; transform: translate(-11px, -9px) skew(-18deg) scale(1.06); text-shadow: -7px 0 #ffffff; }
+  88% { content: attr(data-word1); opacity: 0.95; transform: translate(5px, 4px) skew(6deg); text-shadow: 3px 0 #000000; }
   90% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
   100% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
+}
+.dual-word-glitch.small {
+  font-size: 1.8rem;    /* Scale down font size */
+  height: 2rem;         /* Scale down height */
+  line-height: 2rem;
+  margin: 0.5rem auto;  /* Adjust spacing */
 }
