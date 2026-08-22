@@ -223,3 +223,86 @@ p {
     z-index: 100;       /* Garante que fique acima do fundo de estática */
     pointer-events: none; /* Opcional: impede que a imagem clique/interfira no texto */
 }
+/* Container and animation */
+.glitch-box-center {
+  width: 100%;
+  max-width: 500px;
+  margin: 2.5rem auto;
+  display: block;
+}
+
+.img-flicker {
+  width: 100%;
+  height: auto;
+  display: block;
+  opacity: 0.9;
+  box-sizing: border-box; /* Ensures the border doesn't expand the image size */
+  animation: flicker-suave 3.5s infinite steps(1);
+}
+
+/* TOGGLEABLE BORDER CLASS */
+.img-flicker.has-border {
+  border: 2px solid #ffffff; /* Change thickness or color here */
+  padding: 4px;              /* Optional: creates a small space between image and border */
+}
+
+/* Glitch animation */
+@keyframes flicker-suave {
+  0%, 100% { opacity: 0.9; transform: translate(0, 0); }
+  2% { opacity: 0.2; transform: translate(-3px, 1px); filter: invert(0.8); }
+  4% { opacity: 0.9; transform: translate(0, 0); filter: none; }
+  45% { opacity: 0.9; transform: translate(0, 0); }
+  46% { opacity: 0.3; transform: translate(2px, -2px); }
+  47% { opacity: 0.8; transform: translate(0, 0); }
+  80% { opacity: 0.9; transform: translate(0, 0); }
+  81% { opacity: 0.1; }
+  82% { opacity: 0.95; transform: translate(-4px, 2px); filter: contrast(150%); }
+  83% { opacity: 0.9; transform: translate(0, 0); filter: none; }
+}
+.dual-word-glitch {
+  font-family: 'Great Vibes', cursive;
+  font-size: 4rem;
+  font-weight: 400;
+  text-align: center;
+  color: #ffffff;
+  margin: 2.5rem auto;
+  min-height: 4.5rem;
+  position: relative;
+  display: block;
+}
+
+.dual-word-glitch::before {
+  content: attr(data-word1);
+  animation: rare-swap-mono-jitter 2s infinite steps(1);
+}
+
+@keyframes rare-swap-mono-jitter {
+  /* Word 1 - Dominant Base (0% to 49%) */
+  0% { content: attr(data-word1); opacity: 0.95; transform: translate(0, 0) skew(0deg); text-shadow: none; }
+  
+  /* Monochromatic Jitters (Word 1) */
+  4% { content: attr(data-word1); opacity: 0.1; transform: translate(-8px, 5px) skew(12deg) scale(1.05); text-shadow: 4px 0 #ffffff; }
+  6% { content: attr(data-word1); opacity: 0.95; transform: translate(6px, -4px) skew(-8deg); text-shadow: -3px 0 #000000; }
+  8% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
+  
+  22% { content: attr(data-word1); opacity: 0.15; transform: translate(10px, -6px) skew(-15deg); text-shadow: -5px 0 #ffffff, 5px 0 #000000; }
+  24% { content: attr(data-word1); opacity: 0.95; transform: translate(-4px, 3px) skew(5deg); text-shadow: 3px 0 #ffffff; }
+  26% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
+
+  /* Very Brief Flash of Word 2 (50% to 58% only) */
+  50% { content: attr(data-word1); opacity: 0.05; transform: translate(-12px, -8px) skew(20deg) scale(0.95); text-shadow: 6px 0 #ffffff; }
+  52% { content: attr(data-word2); opacity: 0.95; transform: translate(8px, 6px) skew(-10deg) scale(1.08); text-shadow: -5px 0 #ffffff, 5px 0 #000000; }
+  55% { content: attr(data-word2); opacity: 0.2; transform: translate(-5px, -3px) skew(4deg); text-shadow: 4px 0 #ffffff; }
+  58% { content: attr(data-word2); opacity: 0.85; transform: translate(3px, -2px) skew(-6deg); text-shadow: none; }
+
+  /* Quick Snap Back to Word 1 (59% to 100%) */
+  59% { content: attr(data-word1); opacity: 0.1; transform: translate(-10px, 8px) skew(18deg) scale(1.04); text-shadow: 6px 0 #ffffff; }
+  61% { content: attr(data-word1); opacity: 0.95; transform: translate(9px, -5px) skew(-14deg); text-shadow: -6px 0 #ffffff, 6px 0 #000000; }
+  63% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
+
+  /* Final Pre-loop Jitter (Word 1) */
+  86% { content: attr(data-word1); opacity: 0.05; transform: translate(-11px, -6px) skew(-18deg) scale(1.06); text-shadow: -7px 0 #ffffff; }
+  88% { content: attr(data-word1); opacity: 0.95; transform: translate(5px, 3px) skew(6deg); text-shadow: 3px 0 #000000; }
+  90% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
+  100% { content: attr(data-word1); opacity: 0.9; transform: translate(0, 0) skew(0deg); text-shadow: none; }
+}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOTAISHI</title>
+    <link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- MAIN CONTENT (HIDDEN UNTIL CONFIRMED) -->
+<main>
+<h2 class="dual-word-glitch" data-word1="Kotaishi" data-word2="Eve"></h2>
+<div class="glitch-box-center">
+  <!-- Remove "has-border" to turn the border off -->
+  <img src="imgs/acata.png" alt="Glitch Image" class="img-flicker">
+</div>
+</main>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    let audioCtx = null;
+
+    // --- 1. WEB AUDIO SYNTHESIZER ---
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    // Heavy Mechanical Typewriter Key Press
+    function playTypeKey(volume = 1.0) {
+        if (!audioCtx) initAudio();
+
+        const now = audioCtx.currentTime;
+        const pitchVariance = (Math.random() - 0.5) * 80;
+
+        // DULL MECHANICAL CLACK (Filtered Noise Burst)
+        const bufferSize = audioCtx.sampleRate * 0.05;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(800 + pitchVariance, now); 
+
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0.25 * volume, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+
+        noise.start(now);
+        noise.stop(now + 0.04);
+
+        // HEAVY BOTTOM-OUT THUD
+        const thudOsc = audioCtx.createOscillator();
+        const thudGain = audioCtx.createGain();
+        thudOsc.type = 'triangle';
+        thudOsc.frequency.setValueAtTime(85 + (Math.random() * 15), now);
+        thudOsc.frequency.exponentialRampToValueAtTime(20, now + 0.07);
+
+        thudGain.gain.setValueAtTime(0.3 * volume, now);
+        thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+
+        thudOsc.connect(thudGain);
+        thudGain.connect(audioCtx.destination);
+
+        thudOsc.start(now);
+        thudOsc.stop(now + 0.07);
+    }
+
+    // --- 2. INTERACTIVE WORD HOVER TRIGGERS & AMBIENT FLICKER ---
+    function setupContentInteractions() {
+        // Ambient Random Letter Flicker
+        const textContainers = document.querySelectorAll("#fic-content p, #fic-content h1");
+
+        textContainers.forEach(container => {
+            const processNode = (node) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent;
+                    const fragment = document.createDocumentFragment();
+
+                    for (let char of text) {
+                        const span = document.createElement("span");
+                        span.textContent = char;
+
+                        if (char.trim() !== "" && Math.random() < 0.03) {
+                            span.classList.add("flicker");
+                            span.style.animationDelay = `${(Math.random() * 5).toFixed(2)}s`;
+                        }
+                        fragment.appendChild(span);
+                    }
+                    node.parentNode.replaceChild(fragment, node);
+                } else if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains("word-glitch")) {
+                    Array.from(node.childNodes).forEach(processNode);
+                }
+            };
+
+            Array.from(container.childNodes).forEach(processNode);
+        });
+
+        // Interactive Word: Backspace -> Pause -> Type Reveal (No Final Sound)
+        const glitchWords = document.querySelectorAll(".word-glitch");
+
+        glitchWords.forEach(word => {
+            word.style.animationDelay = `${(Math.random() * 3).toFixed(2)}s`;
+            const altText = word.getAttribute("data-alt");
+
+            word.addEventListener("mouseenter", () => {
+                if (!word.classList.contains("revealed") && !word.classList.contains("typing")) {
+                    word.classList.add("typing");
+
+                    let originalText = word.textContent;
+                    let deleteIndex = originalText.length;
+                    const deleteSpeed = 70; 
+
+                    // PHASE 1: Backspace characters
+                    const deleteInterval = setInterval(() => {
+                        if (deleteIndex > 0) {
+                            deleteIndex--;
+                            word.textContent = originalText.substring(0, deleteIndex);
+                            playTypeKey(1.0);
+                        } else {
+                            clearInterval(deleteInterval);
+
+                            // PHASE 2: Deliberate Pause (350ms)
+                            setTimeout(() => {
+                                let typeIndex = 0;
+                                const typeSpeed = 110; 
+
+                                // PHASE 3: Type replacement word
+                                const typeInterval = setInterval(() => {
+                                    if (typeIndex < altText.length) {
+                                        typeIndex++;
+                                        word.textContent = altText.substring(0, typeIndex);
+                                        playTypeKey(1.0);
+                                    } else {
+                                        clearInterval(typeInterval);
+                                        word.classList.remove("typing");
+                                        word.classList.add("revealed");
+                                        // Silent completion (No sound effect triggered here)
+                                    }
+                                }, typeSpeed);
+
+                            }, 350);
+                        }
+                    }, deleteSpeed);
+                }
+            });
+        });
+    }
+
+    // --- 3. CONFIRM BUTTON LISTENER ---
+    const confirmBtn = document.getElementById("confirm-user-btn");
+    const confirmContainer = document.getElementById("confirm-container");
+    const mainContent = document.getElementById("fic-content");
+
+    if (confirmBtn) {
+        confirmBtn.addEventListener("click", () => {
+            initAudio(); 
+            
+            confirmContainer.style.display = "none";
+            
+            mainContent.style.display = "block";
+            mainContent.style.opacity = "0";
+            mainContent.style.transition = "opacity 0.4s ease-in";
+            
+            requestAnimationFrame(() => {
+                mainContent.style.opacity = "1";
+            });
+
+            setupContentInteractions();
+        });
+    }
+
+    // Fallback: Audio context trigger on generic page click
+    document.addEventListener("click", initAudio, { once: true });
+});
+</script>
+</body>
+</html>
