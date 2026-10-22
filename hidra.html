@@ -92,7 +92,7 @@ void main(){
     vec2 hd = (fp - uHeart)/uHeartR;
     float hl = length(hd);
     float pull = uHeartK*smoothstep(2.2, 0.0, hl);
-    float a = pull*(0.6*sin(t*0.4) + 0.35);
+    float a = pull*(0.1*sin(t*0.4) + 0.35);
     float ca = cos(a), sa = sin(a);
     vec2 rd = vec2(ca*hd.x - sa*hd.y, sa*hd.x + ca*hd.y);
     vec2 dpx = (rd - hd)*uHeartR + hd*sin(hl*9.0 - t*1.6)*0.035*pull*uHeartR;
